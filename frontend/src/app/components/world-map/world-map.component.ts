@@ -13,9 +13,11 @@ import { geoMercator, geoPath } from 'd3-geo';
 import { scaleOrdinal } from 'd3-scale';
 import { CountryPopulation } from '../../services/population.types';
 import countryPolygons from '../../../assets/country-polygons.json';
-import { Feature, FeatureCollection, Polygon } from 'geojson';
+import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 
-const FEATURE_COLLECTION = countryPolygons as FeatureCollection<Polygon, { code: string; name: string }>;
+type CountryGeometry = Polygon | MultiPolygon;
+
+const FEATURE_COLLECTION = countryPolygons as FeatureCollection<CountryGeometry, { code: string; name: string }>;
 
 @Component({
   selector: 'app-world-map',
@@ -79,7 +81,7 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
       return;
     }
 
-    const features = FEATURE_COLLECTION.features as Feature<Polygon, { code: string; name: string }>[];
+    const features = FEATURE_COLLECTION.features as Feature<CountryGeometry, { code: string; name: string }>[];
 
     this.svg
       .selectAll('path')
@@ -102,7 +104,7 @@ export class WorldMapComponent implements AfterViewInit, OnChanges, OnDestroy {
     const countryLookup = new Map((this.countries ?? []).map(country => [country.code, country]));
 
     this.svg
-      .selectAll<SVGPathElement, Feature<Polygon, { code: string; name: string }>>('path')
+      .selectAll<SVGPathElement, Feature<CountryGeometry, { code: string; name: string }>>('path')
       .attr('fill', feature => {
         const stats = feature.properties ? countryLookup.get(feature.properties.code) : undefined;
         if (!stats) {

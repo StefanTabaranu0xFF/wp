@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import * as THREE from 'three';
 import Globe from 'three-globe';
-import { Feature, FeatureCollection, Polygon } from 'geojson';
+import { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson';
 import countryPolygons from '../../../assets/country-polygons.json';
 import { CountryPopulation } from '../../services/population.types';
 
@@ -21,11 +21,13 @@ interface CountryFeatureProperties {
   fill?: string;
 }
 
-type CountryFeature = Feature<Polygon, CountryFeatureProperties>;
+type CountryGeometry = Polygon | MultiPolygon;
+
+type CountryFeature = Feature<CountryGeometry, CountryFeatureProperties>;
 
 type GlobeInstance = any;
 
-const FEATURE_COLLECTION = countryPolygons as FeatureCollection<Polygon, { code: string; name: string }>;
+const FEATURE_COLLECTION = countryPolygons as FeatureCollection<CountryGeometry, { code: string; name: string }>;
 
 @Component({
   selector: 'app-globe',
