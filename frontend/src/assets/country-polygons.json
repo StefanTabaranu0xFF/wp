@@ -1,0 +1,85 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": { "code": "USA", "name": "United States" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-125, 24], [-66, 24], [-66, 49], [-125, 49], [-125, 24]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "code": "CHN", "name": "China" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[73, 18], [135, 18], [135, 53], [73, 53], [73, 18]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "code": "IND", "name": "India" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[68, 6], [97, 6], [97, 36], [68, 36], [68, 6]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "code": "IDN", "name": "Indonesia" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[95, -11], [141, -11], [141, 6], [95, 6], [95, -11]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "code": "PAK", "name": "Pakistan" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[60, 23], [77, 23], [77, 38], [60, 38], [60, 23]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "code": "BRA", "name": "Brazil" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-74, -34], [-34, -34], [-34, 6], [-74, 6], [-74, -34]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "code": "NGA", "name": "Nigeria" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[2, 4], [15, 4], [15, 14], [2, 14], [2, 4]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "code": "BGD", "name": "Bangladesh" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[87, 20], [93, 20], [93, 27], [87, 27], [87, 20]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "code": "RUS", "name": "Russia" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[30, 42], [180, 42], [180, 82], [30, 82], [30, 42]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": { "code": "MEX", "name": "Mexico" },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[-118, 14], [-86, 14], [-86, 33], [-118, 33], [-118, 14]]]
+      }
+    }
+  ]
+}
