@@ -36,9 +36,9 @@ export class GlobeComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() countries: CountryPopulation[] | null = [];
   @ViewChild('globeContainer', { static: true }) globeContainer!: ElementRef<HTMLDivElement>;
 
-  private renderer!: THREE.WebGLRenderer;
-  private camera!: THREE.PerspectiveCamera;
-  private scene!: THREE.Scene;
+  private renderer!: any;
+  private camera!: any;
+  private scene!: any;
   private globe!: GlobeInstance;
   private animationFrame?: number;
   private resizeObserver?: ResizeObserver;
@@ -82,7 +82,7 @@ export class GlobeComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.scene.add(ambientLight, directionalLight);
 
     this.globe = new Globe();
-    const globeMaterial = this.globe.globeMaterial() as THREE.MeshPhongMaterial;
+    const globeMaterial = this.globe.globeMaterial() as any;
     globeMaterial.color = new THREE.Color('#0d1b2a');
     globeMaterial.emissive = new THREE.Color('#1b263b');
     globeMaterial.emissiveIntensity = 0.25;
@@ -97,7 +97,8 @@ export class GlobeComponent implements AfterViewInit, OnChanges, OnDestroy {
       .pointLng('lng')
       .pointRadius('size');
 
-    this.scene.add(this.globe as unknown as THREE.Object3D);
+    const globeObject = this.globe as unknown as { rotation: { y: number } };
+    this.scene.add(globeObject as any);
 
     this.resizeObserver = new ResizeObserver(entries => {
       for (const entry of entries) {
@@ -147,7 +148,8 @@ export class GlobeComponent implements AfterViewInit, OnChanges, OnDestroy {
   private animate(): void {
     this.animationFrame = requestAnimationFrame(() => this.animate());
     if (this.globe) {
-      (this.globe as unknown as THREE.Object3D).rotation.y += 0.0015;
+      const globeObject = this.globe as unknown as { rotation: { y: number } };
+      globeObject.rotation.y += 0.0015;
     }
     this.renderer.render(this.scene, this.camera);
   }
