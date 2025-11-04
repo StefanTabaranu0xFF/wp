@@ -11,21 +11,21 @@ import {
 } from '@angular/core';
 import * as THREE from 'three';
 import Globe from 'three-globe';
+import { Feature, FeatureCollection, Polygon } from 'geojson';
+import countryPolygons from '../../../assets/country-polygons.json';
 import { CountryPopulation } from '../../services/population.types';
 
-interface GlobePoint {
-  lat: number;
-  lng: number;
-  size: number;
-  altitude: number;
-  color: string;
+interface CountryFeatureProperties {
+  code: string;
   name: string;
-  value: number;
+  fill?: string;
 }
 
-type GlobeInstance = InstanceType<typeof Globe> & {
-  pointsData(data: GlobePoint[]): GlobeInstance;
-};
+type CountryFeature = Feature<Polygon, CountryFeatureProperties>;
+
+type GlobeInstance = any;
+
+const FEATURE_COLLECTION = countryPolygons as FeatureCollection<Polygon, { code: string; name: string }>;
 
 @Component({
   selector: 'app-globe',
@@ -42,17 +42,21 @@ export class GlobeComponent implements AfterViewInit, OnChanges, OnDestroy {
   private globe!: GlobeInstance;
   private animationFrame?: number;
   private resizeObserver?: ResizeObserver;
+  private readonly baseFeatures: CountryFeature[] = (FEATURE_COLLECTION.features as CountryFeature[]).map(feature => ({
+    ...feature,
+    properties: { ...feature.properties }
+  }));
 
   constructor(private readonly ngZone: NgZone) {}
 
   ngAfterViewInit(): void {
     this.setupScene();
-    this.updateGlobePoints();
+    this.updateGlobeCountries();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['countries'] && this.globe) {
-      this.updateGlobePoints();
+      this.updateGlobeCountries();
     }
   }
 
@@ -91,11 +95,7 @@ export class GlobeComponent implements AfterViewInit, OnChanges, OnDestroy {
       .showAtmosphere(true)
       .atmosphereColor('#4a90e2')
       .atmosphereAltitude(0.18)
-      .pointAltitude('altitude')
-      .pointColor('color')
-      .pointLat('lat')
-      .pointLng('lng')
-      .pointRadius('size');
+      .polygonsTransitionDuration(400);
 
     const globeObject = this.globe as unknown as { rotation: { y: number } };
     this.scene.add(globeObject as any);
@@ -115,34 +115,60 @@ export class GlobeComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.ngZone.runOutsideAngular(() => this.animate());
   }
 
-  private updateGlobePoints(): void {
-    if (!this.globe || !this.countries) {
+  private updateGlobeCountries(): void {
+    if (!this.globe) {
       return;
     }
 
-    const points: GlobePoint[] = this.countries.map(country => {
-      const magnitude = Math.log10(country.population || 1);
-      const normalized = Math.max(0.2, magnitude / 10);
-      const altitude = 0.05 + normalized * 0.3;
-      let color = '#ffb300';
-      if (country.trend === 'up') {
-        color = '#4caf50';
-      } else if (country.trend === 'down') {
-        color = '#ef5350';
-      }
+    const countryLookup = new Map((this.countries ?? []).map(country => [country.code, country]));
+    const features: CountryFeature[] = this.baseFeatures.map(feature => {
+      const stats = feature.properties ? countryLookup.get(feature.properties.code) : undefined;
+      const trendColor = stats
+        ? stats.trend === 'up'
+          ? '#4caf50'
+          : stats.trend === 'down'
+          ? '#ef5350'
+          : '#ffb300'
+        : 'rgba(255,255,255,0.18)';
 
       return {
-        lat: country.lat,
-        lng: country.lng,
-        size: normalized * 0.9,
-        altitude,
-        color,
-        name: country.name,
-        value: country.population
-      };
+        ...feature,
+        properties: {
+          ...feature.properties,
+          fill: trendColor
+        }
+      } as CountryFeature;
     });
 
-    this.globe.pointsData(points);
+    const globe = this.globe as any;
+
+    globe
+      .polygonsData(features)
+      .polygonCapColor((feature: CountryFeature) => feature.properties?.fill ?? 'rgba(255,255,255,0.18)')
+      .polygonSideColor(() => 'rgba(15, 28, 46, 0.55)')
+      .polygonStrokeColor(() => '#0f172a')
+      .polygonAltitude((feature: CountryFeature) => {
+        const stats = feature.properties ? countryLookup.get(feature.properties.code) : undefined;
+        return stats ? 0.06 : 0.02;
+      })
+      .polygonLabel((feature: CountryFeature) => {
+        const stats = feature.properties ? countryLookup.get(feature.properties.code) : undefined;
+        const countryName = feature.properties?.name ?? 'Unknown';
+        if (!stats) {
+          return `<div class="globe-tooltip"><strong>${countryName}</strong><br/>No population data</div>`;
+        }
+
+        const trendText =
+          stats.trend === 'up'
+            ? 'Population increasing'
+            : stats.trend === 'down'
+            ? 'Population decreasing'
+            : 'Stable population';
+
+        return `<div class="globe-tooltip"><strong>${stats.name}</strong><br/>${stats.population.toLocaleString()} people<br/>${trendText}</div>`;
+      });
+
+    globe.pointsData([]);
   }
 
   private animate(): void {
