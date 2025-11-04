@@ -1,0 +1,58 @@
+<div class="app-shell" *ngIf="snapshot$ | async as snapshot">
+  <header class="app-header">
+    <div class="branding">
+      <h1>Global Population Pulse</h1>
+      <p>Live simulation of population trends by country</p>
+    </div>
+    <div class="timestamp">Updated: {{ snapshot.updatedAt | date: 'mediumTime' }}</div>
+  </header>
+
+  <main class="app-content">
+    <section class="visual">
+      <app-globe [countries]="snapshot.countries"></app-globe>
+    </section>
+    <section class="map">
+      <app-world-map [countries]="snapshot.countries"></app-world-map>
+    </section>
+  </main>
+
+  <section class="legend">
+    <div class="legend-item">
+      <span class="dot up"></span>
+      <span>Population increasing</span>
+    </div>
+    <div class="legend-item">
+      <span class="dot down"></span>
+      <span>Population decreasing</span>
+    </div>
+    <div class="legend-item">
+      <span class="dot steady"></span>
+      <span>Stable population</span>
+    </div>
+  </section>
+
+  <section class="countries">
+    <table>
+      <thead>
+        <tr>
+          <th>Country</th>
+          <th class="align-right">Population</th>
+          <th class="align-right">Change %</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let country of snapshot.countries">
+          <td>{{ country.name }}</td>
+          <td class="align-right">{{ country.population | number }}</td>
+          <td class="align-right" [ngClass]="country.trend">{{ country.change | number:'1.2-2' }}</td>
+          <td>
+            <span class="badge" [ngClass]="country.trend">
+              {{ country.trend === 'up' ? 'Increasing' : country.trend === 'down' ? 'Decreasing' : 'Stable' }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
