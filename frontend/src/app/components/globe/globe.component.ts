@@ -23,6 +23,10 @@ interface GlobePoint {
   value: number;
 }
 
+type GlobeInstance = InstanceType<typeof Globe> & {
+  pointsData(data: GlobePoint[]): GlobeInstance;
+};
+
 @Component({
   selector: 'app-globe',
   templateUrl: './globe.component.html',
@@ -35,7 +39,7 @@ export class GlobeComponent implements AfterViewInit, OnChanges, OnDestroy {
   private renderer!: THREE.WebGLRenderer;
   private camera!: THREE.PerspectiveCamera;
   private scene!: THREE.Scene;
-  private globe!: Globe<GlobePoint>;
+  private globe!: GlobeInstance;
   private animationFrame?: number;
   private resizeObserver?: ResizeObserver;
 
@@ -77,8 +81,8 @@ export class GlobeComponent implements AfterViewInit, OnChanges, OnDestroy {
     directionalLight.position.set(200, 200, 400);
     this.scene.add(ambientLight, directionalLight);
 
-    this.globe = new Globe<GlobePoint>();
-    const globeMaterial = this.globe.globeMaterial();
+    this.globe = new Globe();
+    const globeMaterial = this.globe.globeMaterial() as THREE.MeshPhongMaterial;
     globeMaterial.color = new THREE.Color('#0d1b2a');
     globeMaterial.emissive = new THREE.Color('#1b263b');
     globeMaterial.emissiveIntensity = 0.25;
