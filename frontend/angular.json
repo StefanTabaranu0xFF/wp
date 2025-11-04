@@ -58,10 +58,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "population-visualizer:build:production"
+              "buildTarget": "population-visualizer:build:production"
             },
             "development": {
-              "browserTarget": "population-visualizer:build:development",
+              "buildTarget": "population-visualizer:build:development",
               "proxyConfig": "proxy.conf.json"
             }
           },
