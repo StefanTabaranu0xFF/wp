@@ -25,7 +25,8 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": ["frame-ticker"]
           },
           "configurations": {
             "production": {
@@ -42,7 +43,10 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": {
+                "fonts": false
+              }
             },
             "development": {
               "buildOptimizer": false,
@@ -58,10 +62,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "population-visualizer:build:production"
+              "buildTarget": "population-visualizer:build:production"
             },
             "development": {
-              "browserTarget": "population-visualizer:build:development",
+              "buildTarget": "population-visualizer:build:development",
               "proxyConfig": "proxy.conf.json"
             }
           },

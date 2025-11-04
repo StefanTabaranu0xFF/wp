@@ -6,7 +6,8 @@
   },
   "files": [
     "src/main.ts",
-    "src/polyfills.ts"
+    "src/shims/three-tsl.ts",
+    "src/shims/three-webgpu.ts"
   ],
   "include": [
     "src/**/*.d.ts"
