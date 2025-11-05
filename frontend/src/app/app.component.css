@@ -107,6 +107,8 @@ tbody td {
 
 .align-right {
   text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
 }
 
 td.up,
