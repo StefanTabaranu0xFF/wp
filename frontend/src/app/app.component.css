@@ -105,10 +105,10 @@ tbody td {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.align-right {
+:is(th, td).align-right {
   text-align: right;
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: 'tnum';
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
 }
 
 td.up,
